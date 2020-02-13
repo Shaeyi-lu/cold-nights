@@ -1,0 +1,123 @@
+
+<html>
+  <head>
+    <title>A Multiplayer Game</title>
+    <link rel="stylesheet" media="screen" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="//code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <style>
+      canvas {
+        width: 800px;
+        height: 600px;
+        border: 5px solid black;
+      }
+      .contain{
+          background-color: aqua;
+      }
+      input[type="submit"]{
+        background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  font: 20 px;
+      }
+      
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="contain">
+        <h1 class="header">Rock, paper, scissors Game</h1>
+        <div class= "options">
+            <form>
+                <h3>Make your option of rock, paper or scissors</h3>
+                <input class="check-option" id="rock" type="radio" name="choice" value="rock" checked >
+                <label class="check-label" for="rock">Rock</label>
+                <br />
+
+                <input class="check-option" id="paper" type="radio" name="choice" value="paper">
+                <label class="check-label" for="paper">Paper</label>
+                <br/>
+
+                <input class="check-option" id="scissors" type="radio" name="choice" value="paper">
+                <label class="check-label" for="scissors">Scissors</label>
+                <br/>
+
+                <input type="submit"class="button" value="SUBMIT"/>
+
+                
+            </form>
+        </div>
+
+        <script>
+                $(function() {
+                    var socket = io.connect();
+                    var $messageForm = $('#messageForm');
+                    var $message = $('#message');
+                    var $chat = $('#chat');
+                    var $gameArea = $('#gameArea');
+                    var $userFormArea = $('#userFormArea');
+                    var $userForm = $('#userForm');
+                    var $users = $('#users');
+                    var $username = $('#username');
+                    var $game = $('#game');
+                    var $info = $('#info');
+                    var submitted = false;
+
+                    socket.on('tie', function (choices) {
+                    countdown(choices);
+
+                    setTimeout(function() {
+                        $info.append('<br />A tie!');
+                    }, 5000);
+
+                    submitted = false;
+                });
+
+                socket.on('player 1 win', function (choices) {
+                    countdown(choices);
+
+                    setTimeout(function () {
+                        $info.append('<br />' + choices[0]['user'] + ' wins!');
+                    }, 5000);
+
+                    submitted = false;
+                });
+                
+                socket.on('player 2 win', function (choices) {
+                    countdown(choices);
+
+                    setTimeout(function() {
+                        $info.append('<br />' + choices[1]['user'] + ' wins!');
+                    }, 5000);
+
+                    submitted = false;
+                });
+                function countdown(choices) {      
+                    setTimeout(function() {
+                        $info.html('3...'); 
+                    }, 0);
+                    setTimeout(function() {
+                        $info.html('2...'); 
+                    }, 1000);
+                    setTimeout(function() {
+                        $info.html('1...'); 
+                    }, 2000);
+                    setTimeout(function() {
+                        $info.html(choices[0]['user'] + ' picked ' + choices[0]['choice'] + '.');
+                    }, 3000);
+                    setTimeout(function() {
+                        $info.append('<br />' + choices[1]['user'] + ' picked ' + choices[1]['choice'] + '.');
+                    }, 4000);
+                }
+            
+    
+            });
+        </script>
+    </div>
+  </body>
+  <script src="/static/game.js"></script>
+</html>
